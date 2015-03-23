@@ -11,9 +11,69 @@ class ATextRenderer : public APawn
 	GENERATED_UCLASS_BODY()
 
 public:
+	/**
+	* Static Mesh component that the text rendering block will be a child of.
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh Properties")
+	class UStaticMeshComponent* Body;
 
-private:
+	/**
+	* The Font to be used for rendering text. Make sure it on type = Runtime.
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Properties")
+	class UFont* Font;
 
+	/**
+	* The width of the rendertarget on which the text will be drawn
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Properties")
+	float RenderTargetWidth;
+
+	/**
+	* The height of the rendertarget on which the text will be drawn
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Properties")
+	float RenderTargetHeight;
+
+	/**
+	* The color of the text
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Properties")
+	FLinearColor TextColor;
+
+	/**
+	* The background color
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Properties")
+	FLinearColor BackgroundColor;
+
+	/**
+	* The color of the shadow on the text
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Properties")
+	FLinearColor ShadowColor;
+
+	/**
+	* The offset of the shadow on the text
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Properties")
+	FVector2D ShadowOffset;
+public:
+	// Delegate to handle text updates
+	UFUNCTION()
+	void OnReceiveUpdate(class UCanvas* Canvas, int32 Width, int32 Height);
+
+private: // Member variables
+	class UCanvasRenderTarget2D* RenderTarget;
+	class UMaterialInstanceDynamic* MaterialInstance;
+	FString EnteredText;
+
+private: // Functions
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	// Called when the game ends or when actor is destroyed
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };
 
 
