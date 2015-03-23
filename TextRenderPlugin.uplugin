@@ -1,0 +1,21 @@
+{
+	"FileVersion" : 1,
+	
+	"FriendlyName" : "Text Render Plugin",
+	"Version" : 1,
+	"VersionName" : "1.0",
+	"CreatedBy" : "Nishant Naveen",
+	"CreatedByURL" : "http://realityenhanced.com",
+	"EngineVersion" : "4.8.0",
+	"Description" : "A text rendering plugin",
+	"Category" : "Rendering.Components",
+	"EnabledByDefault" : true,
+	
+	"Modules" :
+	[
+		{
+			"Name" : "TextRenderPlugin",
+			"Type" : "Runtime"
+		}
+	]
+}
