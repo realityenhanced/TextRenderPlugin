@@ -9,6 +9,13 @@ ATextRenderer::ATextRenderer(const FObjectInitializer& ObjectInitializer)
 	Body = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
 	RootComponent = Body;
 
+	// Get the assets
+	# define TR_ASSETS_FOLDER TEXT("/TextRenderPlugin") // used by engine plugin
+	TextMaterial = ConstructorHelpers::FObjectFinder<UMaterialInterface>(TR_ASSETS_FOLDER TEXT("/TR_TextMaterialInstance")).Object;
+
+	// Default Params
+	RenderTargetWidth = 512;
+	RenderTargetHeight = 512;
 }
 
 // Called when the game starts or when spawned
@@ -20,20 +27,17 @@ void ATextRenderer::BeginPlay()
 	RenderTarget = UCanvasRenderTarget2D::CreateCanvasRenderTarget2D(GetWorld(), UCanvasRenderTarget2D::StaticClass(), RenderTargetWidth, RenderTargetHeight);
 	if (RenderTarget != nullptr)
 	{
+		RenderTarget->ClearColor = BackgroundColor;
 		RenderTarget->UpdateResource();
 		RenderTarget->OnCanvasRenderTargetUpdate.AddDynamic(this, &ATextRenderer::OnReceiveUpdate);
 	}
 
 	// Create a dynamic material instance and set up the texture it will use
-	// TODO: Create a parameterized material that accepts a texture
-	
-	if (MaterialInstance != nullptr)
+	TextMaterialInstance = Body->CreateDynamicMaterialInstance(0, TextMaterial);
+	if (TextMaterialInstance != nullptr)
 	{
-		MaterialInstance->SetTextureParameterValue(FName("Texture"), RenderTarget);
+		TextMaterialInstance->SetTextureParameterValue(FName("Texture"), RenderTarget);
 	}
-
-	// TODO: Remove me
-	EnteredText = TEXT("HELLO WORLD");
 }
 
 // Called when the game ends or when actor is destroyed
@@ -48,10 +52,30 @@ void ATextRenderer::OnReceiveUpdate(class UCanvas* Canvas, int32 Width, int32 He
 {
 	if (Canvas != nullptr && Font != nullptr)
 	{
+		RenderTarget->ClearColor = BackgroundColor;
+
 		FVector2D pos(0.0f, 0.0f);
 		FCanvasTextItem textItem(pos, FText::FromString(EnteredText), Font, TextColor);
 		textItem.EnableShadow(ShadowColor, ShadowOffset);
 		textItem.BlendMode = ESimpleElementBlendMode::SE_BLEND_AlphaBlend;
 		Canvas->DrawItem(textItem);
 	}
+}
+
+// Input Handling
+void ATextRenderer::SetupPlayerInputComponent(class UInputComponent* InputComponent)
+{
+	// set up gameplay key bindings
+	check(InputComponent);
+
+	InputComponent->BindKey(EKeys::A, IE_Pressed, this, &ATextRenderer::UpdateText);
+}
+
+// On Key Press
+void ATextRenderer::UpdateText()
+{
+	// TODO: Remove me
+	EnteredText = TEXT("HELLOEY WORLD");
+	RenderTarget->UpdateResource();
+	//
 }

@@ -18,7 +18,7 @@ public:
 	class UStaticMeshComponent* Body;
 
 	/**
-	* The Font to be used for rendering text. Make sure it on type = Runtime.
+	* The Font to be used for rendering text. Make sure it on type = Offline.
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Text Properties")
 	class UFont* Font;
@@ -63,9 +63,14 @@ public:
 	UFUNCTION()
 	void OnReceiveUpdate(class UCanvas* Canvas, int32 Width, int32 Height);
 
+	// Delegate called on each key press
+	UFUNCTION()
+	void UpdateText();
+
 private: // Member variables
 	class UCanvasRenderTarget2D* RenderTarget;
-	class UMaterialInstanceDynamic* MaterialInstance;
+	class UMaterialInterface* TextMaterial;
+	class UMaterialInstanceDynamic* TextMaterialInstance;
 	FString EnteredText;
 
 private: // Functions
@@ -74,6 +79,10 @@ private: // Functions
 
 	// Called when the game ends or when actor is destroyed
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+protected:
+	// APawn interface to override key press behavior
+	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 };
 
 
