@@ -63,15 +63,15 @@ public:
 	UFUNCTION()
 	void OnReceiveUpdate(class UCanvas* Canvas, int32 Width, int32 Height);
 
-	// Delegate called on each key press
-	UFUNCTION()
-	void UpdateText();
+	// Called on each key press from the KeyboardInputProcessor
+	void UpdateText(const FKeyEvent& KeyEvent);
 
 private: // Member variables
 	class UCanvasRenderTarget2D* RenderTarget;
 	class UMaterialInterface* TextMaterial;
 	class UMaterialInstanceDynamic* TextMaterialInstance;
 	FString EnteredText;
+	TSharedPtr<IInputProcessor> KeyboardInputProcessor;
 
 private: // Functions
 	// Called when the game starts or when spawned
@@ -79,10 +79,6 @@ private: // Functions
 
 	// Called when the game ends or when actor is destroyed
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-protected:
-	// APawn interface to override key press behavior
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 };
 
 

@@ -38,11 +38,20 @@ void ATextRenderer::BeginPlay()
 	{
 		TextMaterialInstance->SetTextureParameterValue(FName("Texture"), RenderTarget);
 	}
+
+	// Enable the Input Preprocessor
+	KeyboardInputProcessor = TSharedPtr<IInputProcessor>(new FKeyboardInputProcessor());
+	static_cast<FKeyboardInputProcessor*>(KeyboardInputProcessor.Get())->SetClient(this);
+	FSlateApplication::Get().SetInputPreProcessor(true, KeyboardInputProcessor);
 }
 
 // Called when the game ends or when actor is destroyed
 void ATextRenderer::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	// Disable the Input Preprocessor
+	static_cast<FKeyboardInputProcessor*>(KeyboardInputProcessor.Get())->SetClient(nullptr);
+	FSlateApplication::Get().SetInputPreProcessor(false, nullptr);
+
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -62,20 +71,15 @@ void ATextRenderer::OnReceiveUpdate(class UCanvas* Canvas, int32 Width, int32 He
 	}
 }
 
-// Input Handling
-void ATextRenderer::SetupPlayerInputComponent(class UInputComponent* InputComponent)
-{
-	// set up gameplay key bindings
-	check(InputComponent);
-
-	InputComponent->BindKey(EKeys::A, IE_Pressed, this, &ATextRenderer::UpdateText);
-}
-
 // On Key Press
-void ATextRenderer::UpdateText()
+void ATextRenderer::UpdateText(const FKeyEvent& KeyEvent)
 {
-	// TODO: Remove me
-	EnteredText = TEXT("HELLOEY WORLD");
-	RenderTarget->UpdateResource();
-	//
+	// TODO: Add normal text editor functionality.
+	// For now append the char that was entered.
+	uint32 character = KeyEvent.GetCharacter();
+	if (character != 0)
+	{
+		EnteredText = EnteredText.AppendChar(character);
+		RenderTarget->UpdateResource();
+	}
 }

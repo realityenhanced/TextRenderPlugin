@@ -2,3 +2,4 @@
 #include "CoreUObject.h"
 #include "Engine.h"
 #include "ITextRenderPlugin.h"
+#include "KeyboardInputProcessor.h"

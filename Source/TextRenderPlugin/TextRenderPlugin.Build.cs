@@ -31,10 +31,11 @@ namespace UnrealBuildTool.Rules
 				}
             );
 
-			//PrivateDependencyModuleNames.AddRange(
-			//	new string[]
-			//	{
-			//	});
+			PrivateDependencyModuleNames.AddRange(
+				new string[]
+				{
+                    "Slate"
+				});
 
 			//DynamicallyLoadedModuleNames.AddRange(
 			//	new string[]
